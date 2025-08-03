@@ -1,0 +1,35 @@
+blueprint:
+  name: Toggle all lights in an area
+  description: Turn on all lights in an area if they are all off, or turn them all off if any light is on.
+  domain: automation
+  input:
+    area:
+      name: Area
+      description: The area containing the lights to toggle
+      selector:
+        area: {}
+trigger:
+  - platform: state
+    entity_id: !input area
+    to: 'on'
+    for:
+      seconds: 1
+condition: []
+action:
+  - variables:
+      lights: !input area
+  - choose:
+      - conditions:
+          - condition: template
+            value_template: >
+              {% set lights = expand(area_entities(lights)) | selectattr('domain', 'eq', 'light') | list %}
+              {{ lights | selectattr('state', 'eq', 'on') | list | length == 0 }}
+        sequence:
+          - service: light.turn_on
+            target:
+              area_id: !input area
+      - conditions: []
+        sequence:
+          - service: light.turn_off
+            target:
+              area_id: !input area
