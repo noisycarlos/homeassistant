@@ -1,6 +1,6 @@
 blueprint:
-  name: Toggle All Lights in Area
-  description: Toggle all lights in a specified area
+  name: Toggle All Lights in Area with Brightness Control
+  description: Toggle all lights in a specified area. If at least one light is on, turn them all off; otherwise, turn them all on with a specified brightness.
   domain: script
   input:
     target_area:
@@ -8,6 +8,16 @@ blueprint:
       description: The area containing the lights to toggle.
       selector:
         area: {}
+    brightness:
+      name: Brightness
+      description: Brightness level to set when turning on the lights (0-255).
+      default: 255
+      selector:
+        number:
+          min: 0
+          max: 255
+          unit_of_measurement: ""
+          mode: slider
 variables:
   area_entities: !input target_area
 sequence:
@@ -27,4 +37,6 @@ sequence:
           - service: light.turn_on
             target:
               entity_id: "{{ lights }}"
+            data:
+              brightness: !input brightness
 mode: single
