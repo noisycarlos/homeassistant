@@ -1,5 +1,5 @@
 blueprint:
-  name: Toggle all lights in an area
+  name: Toggle all lights in a specific area
   description: Turn on all lights in an area if they are all off, or turn them all off if any light is on.
   domain: automation
   input:
